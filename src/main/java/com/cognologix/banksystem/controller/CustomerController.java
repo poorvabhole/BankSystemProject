@@ -1,21 +1,15 @@
 package com.cognologix.banksystem.controller;
 
-import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.dto.bank.CustomerDTO;
 import com.cognologix.banksystem.dto.bank.CustomerListResponse;
 import com.cognologix.banksystem.entities.Customer;
-import com.cognologix.banksystem.services.Implementation.BankServiceImpl;
 import com.cognologix.banksystem.services.Implementation.CustomerServiceImpl;
-import netscape.javascript.JSObject;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.util.List;
 
 @RestController
 public class CustomerController {
