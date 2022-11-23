@@ -24,6 +24,7 @@ public class CustomerController {
     @GetMapping("/getcustomer")
     public ResponseEntity<CustomerListResponse> getCustomer(){
         CustomerListResponse customerListResponse = customerService.getCustomer();
+        customerListResponse.setMessage("Customers list");
         return new ResponseEntity<>(customerListResponse, HttpStatus.OK);
     }
 
@@ -34,7 +35,7 @@ public class CustomerController {
      * @return response entity
      * */
     @PostMapping("/register")
-    public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody Customer customer){
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody Customer customer){
         CustomerDTO customerDTO = customerService.createCustomer(customer);
         customerDTO.setMessage("Customer added successfully");
         return new ResponseEntity<>(customerDTO, HttpStatus.OK);

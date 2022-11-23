@@ -17,13 +17,13 @@ public class Account {
 //    UUID uuid = UUID.randomUUID();
     private String accountId = UUID.randomUUID().toString();
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String accountType;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private Double balance = 500.00;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private Integer customerId;
 
 }

@@ -17,19 +17,19 @@ import java.time.LocalDate;
 public class Customer {
     private Integer customerId;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String fullName;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String address;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String dateOfBirh;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String panNumber;
 
-    @NotBlank(message = "Required field")
+//    @NotBlank(message = "Required field")
     private String aadharNumber;
 
 }

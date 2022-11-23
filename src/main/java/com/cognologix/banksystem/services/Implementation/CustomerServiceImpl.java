@@ -1,6 +1,7 @@
 package com.cognologix.banksystem.services.Implementation;
 
 import com.cognologix.banksystem.Exception.CustomerNotFoundException;
+import com.cognologix.banksystem.Exception.EmptyFieldException;
 import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.dao.CustomerDao;
 import com.cognologix.banksystem.dto.bank.CustomerDTO;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.hibernate.tool.schema.SchemaToolingLogging.LOGGER;
-
 @Service
 @Component
 public class CustomerServiceImpl implements CustomerService {
@@ -22,7 +21,8 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerDao customerDao;
     @Override // create new customer
     public CustomerDTO createCustomer(Customer customer) {
-        Customer newCustomer = customerDao.addCustomer(customer);
+        Customer newCustomer = null;
+            newCustomer = customerDao.addCustomer(customer);
         return new CustomerDTO(newCustomer.getCustomerId(),newCustomer.getFullName());
     }
 

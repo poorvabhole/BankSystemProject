@@ -15,47 +15,4 @@ class BanksystemApplicationTests {
     void contextLoads() {
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//	@Autowired
-//	private BankServiceImpl bankService;
-//
-//	@MockBean
-//	private BankAccountDao accountDao;
-//
-
-//	@Test
-//	public void createCustomerTest(){
-//		BankAccount bankAccount = new BankAccount(5,"Steph", "ekhl55442", 354698710, "Satara","saving", 1100.00);
-//		BankAccountDTO accountDTO = new BankAccountDTO(5);
-////		when(accountDao.save(bankAccount)).thenReturn(bankAccount);
-////		Assert.assertEquals(accountDTO,bankService.createAccount(bankAccount));
-//		accountDao.save(bankAccount);
-////		assertNotNull(accountDao.findById(5));
-////		assertEquals(accountDTO.getAccount_no(), bankAccount.getAccountNumber());
-//		Assert.assertNotNull(accountDao.findById(5));
-//	}
-//
 }
