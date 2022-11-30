@@ -1,7 +1,5 @@
 package com.cognologix.banksystem.services.Implementation;
 
-import com.cognologix.banksystem.Exception.CustomerNotFoundException;
-import com.cognologix.banksystem.Exception.EmptyFieldException;
 import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.dao.CustomerDao;
 import com.cognologix.banksystem.dto.bank.CustomerDTO;
@@ -19,43 +17,26 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerDao customerDao;
+
     @Override // create new customer
     public CustomerDTO createCustomer(Customer customer) {
-        Customer newCustomer = null;
-            newCustomer = customerDao.addCustomer(customer);
-        return new CustomerDTO(newCustomer.getCustomerId(),newCustomer.getFullName());
+        Customer newCustomer = customerDao.save(customer);
+        return new CustomerDTO(newCustomer.getCustomerId(), newCustomer.getFullName());
     }
 
     @Override // get list of registered customer
-    public CustomerListResponse getCustomer(){
+    public CustomerListResponse getCustomer() {
         List<Customer> customerList = null;
         try {
             customerList = customerDao.findAll();
-            if (customerList.size() == 0){
+            if (customerList.size() == 0) {
                 throw new EmptyListException("Customer information is empty");
             }
-        }catch (final EmptyListException exception){
-            exception.getMessage();
-        }catch (final Exception ex){
-            ex.getMessage();
+        } catch (final EmptyListException exception) {
+            System.out.println("Error message ==> "+exception.getMessage());
+        } catch (final Exception ex) {
+            System.out.println("Error message ==> "+ex.getMessage());
         }
-
         return new CustomerListResponse(customerList);
-    }
-
-    @Override
-    public String deleteCustomer(Integer customerId) {
-        String message = null;
-        try {
-            if (customerDao.deleteCustomer(customerId)) {
-                message = "Customer deleted";
-            }
-            else {
-                throw new CustomerNotFoundException("Customer not found for given customer Id");
-            }
-        }catch (final CustomerNotFoundException exception){
-            exception.getMessage();
-        }
-        return message;
     }
 }

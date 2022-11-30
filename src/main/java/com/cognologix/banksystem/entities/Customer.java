@@ -1,35 +1,38 @@
 package com.cognologix.banksystem.entities;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.lang.NonNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Entity
 public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, name = "customerId")
     private Integer customerId;
 
-//    @NotBlank(message = "Required field")
+    @NotEmpty(message = "Required field")
+    @Column(name = "fullName")
     private String fullName;
 
-//    @NotBlank(message = "Required field")
+    @NotEmpty(message = "Required field")
+    @Column(name = "address")
     private String address;
 
-//    @NotBlank(message = "Required field")
-    private String dateOfBirh;
+//    @NotNull(message = "Required field")
+//    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @Column(name = "dateOfBirth")
+    private String dateOfBirth;
 
-//    @NotBlank(message = "Required field")
+    @NotEmpty(message = "Required field")
+    @Column(name = "panNumber")
     private String panNumber;
 
-//    @NotBlank(message = "Required field")
+    @NotEmpty(message = "Required field")
+    @Column(name = "aadharNumber")
     private String aadharNumber;
 
 }

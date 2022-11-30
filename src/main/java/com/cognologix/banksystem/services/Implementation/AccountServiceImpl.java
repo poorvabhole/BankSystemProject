@@ -1,33 +1,45 @@
 package com.cognologix.banksystem.services.Implementation;
 
-import com.cognologix.banksystem.Exception.AccountNotFoundException;
+import com.cognologix.banksystem.Exception.EmptyFieldException;
 import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.Exception.InsufficentBalanceException;
 import com.cognologix.banksystem.dao.AccountDao;
-import com.cognologix.banksystem.dto.bank.AccountDTO;
+import com.cognologix.banksystem.dao.CustomerDao;
+import com.cognologix.banksystem.dao.TransactionDao;
+import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
+import com.cognologix.banksystem.dto.bank.AccountResponse;
 import com.cognologix.banksystem.entities.Account;
+import com.cognologix.banksystem.entities.Customer;
+import com.cognologix.banksystem.entities.Transaction;
 import com.cognologix.banksystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountDao accountDao;
+    @Autowired
+    private CustomerDao customerDao;
+
+    @Autowired
+    private TransactionDao transactionDao;
 
     @Override //Register/create customer
-    public AccountDTO createCustomerAccount(Integer id, Account account) {
-        Account newAccount = null;
-        try {
-            newAccount = accountDao.createAccount(id, account);
-        }catch (final Exception exception){
-            exception.getMessage();
-        }
-        return new AccountDTO(newAccount);
+    public AccountResponse createCustomerAccount(AccountDto accountDto) {
+        Account account = new Account();
+        Integer id = accountDto.getCustomerId();
+        Customer customer = customerDao.findById(id).get();
+        account.setAccountNumber(accountDto.getAccountNumber());
+        account.setAccountType(accountDto.getAccountType());
+        account.setBalance(accountDto.getBalance());
+        account.setCustomer(customer);
+        accountDao.save(account);
+        return new AccountResponse(account);
     }
 
     @Override //return list of accounts
@@ -35,88 +47,99 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accountList = null;
         try {
             accountList = accountDao.findAll();
-            if (accountList.size() == 0){
-                throw  new EmptyListException("Account information is empty");
+            if (accountList.size() == 0) {
+                throw new EmptyListException("Account information is empty");
             }
-        }catch (final EmptyListException exception){
-            exception.getMessage();
+        } catch (final EmptyListException exception) {
+            System.out.println("Error message ==> " + exception.getMessage());
         }
         return new AccountListResponse(accountList);
     }
 
-    @Override // delete account with specified account number
-    public String deleteAccount(String accountNumber) {
-        String message = null;
-        try {
-            if (accountDao.delete(accountNumber)){
-                message = "Account deleted";
-            }else {
-                throw new AccountNotFoundException("Account not found");
-            }
-        }catch (final AccountNotFoundException ex){
-            ex.getMessage();
-        }
-        return message;
-    }
-
     @Override //deposite specified amount in given account
-    public Account deposit(String accountNumber, Double depositAmount) {
-        Account currentAccountUpdate = null;
+    public Account deposit(Long accountNumber, Double depositAmount) {
+        Account currentAccount = null;
         try {
-            final List<Account> currentAccount = accountDao.findById(accountNumber);
-            final Double currentBalance = currentAccount.get(0).getBalance() + depositAmount;
-            currentAccountUpdate = currentAccount.get(0);
-            currentAccountUpdate.setBalance(currentBalance);
-        }catch (final Exception ex){
-            ex.getMessage();
+            currentAccount = accountDao.findByAccountNumberEquals(accountNumber);
+            final Double currentBalance = currentAccount.getBalance() + depositAmount;
+            currentAccount.setBalance(currentBalance);
+            Transaction transaction = new Transaction();
+            transaction.setSenderAccountNumber(null);
+            transaction.setReceiverAccountNumber(accountNumber);
+            transaction.setBalance(currentBalance);
+            transaction.setType("Deposit");
+            transactionDao.save(transaction);
+            accountDao.save(currentAccount);
+        } catch (final Exception ex) {
+            System.out.println("Error message ==> " + ex.getMessage());
         }
-        return currentAccountUpdate;
+        return currentAccount;
     }
-
 
     @Override //withdraw specified amount and check sufficent balance
-    public Account withdraw(String accountNumber, Double withdrawAmount) {
-        Account currentAccountUpdate = null;
+    public Account withdraw(Long accountNumber, Double withdrawAmount) {
+        Account currentAccount = null;
         try {
-            List<Account> currentAccount = accountDao.findById(accountNumber);
-            final Double currentBalance = currentAccount.get(0).getBalance() - withdrawAmount;
-            if (currentBalance < 500){
+            currentAccount = accountDao.findByAccountNumberEquals(accountNumber);
+            final Double currentBalance = currentAccount.getBalance() - withdrawAmount;
+            if (currentBalance < 500) {
                 throw new InsufficentBalanceException("Insufficent balance, can not withdraw money");
             }
-            currentAccountUpdate = currentAccount.get(0);
-            currentAccountUpdate.setBalance(currentBalance);
-        }catch (final InsufficentBalanceException exception){
-            exception.getMessage();
+            currentAccount.setBalance(currentBalance);
+            Transaction transaction = new Transaction();
+            transaction.setSenderAccountNumber(accountNumber);
+            transaction.setReceiverAccountNumber(null);
+            transaction.setBalance(currentBalance);
+            transaction.setType("withdraw");
+            transaction.setDate(LocalDateTime.now());
+            transactionDao.save(transaction);
+            accountDao.save(currentAccount);
+            return currentAccount;
+
+        } catch (final InsufficentBalanceException exception) {
+//            System.out.println("Error message ==> " + exception.getMessage());
+//            exception.printStackTrace();
+            throw new InsufficentBalanceException(exception.getMessage());
         }
-        return currentAccountUpdate;
     }
 
     @Override //transfer money from 1 customer account to second customer account
-    public AccountListResponse transactionBetweenCustomers(Integer customerId1, String accountNumber1, Integer customerId2, String accountNumber2, Double amount) {
+    public String transactionBetweenCustomers(Long senderAccNo, Long receiverAccNo, Double amount) {
         List<Account> updatedAccountsList = null;
         try {
-            Account accountCustomer1 = withdraw(accountNumber1, amount);
-            Account accountCustomer2 = deposit(accountNumber2, amount);
-            updatedAccountsList = new ArrayList<>();
-            updatedAccountsList.add(accountCustomer1);
-            updatedAccountsList.add(accountCustomer2);
-        }catch (final Exception ex){
-            ex.getMessage();
+            withdraw(senderAccNo, amount);
+            deposit(receiverAccNo, amount);
+        } catch (final Exception ex) {
+            System.out.println("Error message ==> " + ex.getMessage());
         }
-        return new AccountListResponse(updatedAccountsList);
+        return "Transaction Done";
     }
 
-    @Override //get list of accounts for specific customer
-    public AccountListResponse getAccountsByCustomerId(Integer customerId) {
-        List<Account> customerAccountsList = null;
+    @Override
+    public List<Transaction> getAccountStatement(Long accountNumber) {
+//         statement = null;
         try {
-            customerAccountsList = accountDao.findByCustomerId(customerId);
-            if (customerAccountsList.size() == 0){
-                throw new EmptyListException("Account for given customer Id is not present");
-            }
-        }catch (EmptyListException e){
-            e.getMessage();
+            List<Transaction> statement = transactionDao.findBySenderAccountNumber(accountNumber);
+            System.out.println(statement);
+            return statement;
+        } catch (final EmptyListException exception) {
+            System.out.println("Error message ==> " + exception.getMessage());
+            throw new EmptyFieldException(exception.getMessage());
         }
-        return new AccountListResponse(customerAccountsList);
+
     }
+//
+//    @Override //get list of accounts for specific customer
+//    public AccountListResponse getAccountsByCustomerId(Integer customerId) {
+//        List<Account> customerAccountsList = null;
+//        try {
+//            customerAccountsList = accountDao.findByCustomerId(customerId);
+//            if (customerAccountsList.size() == 0){
+//                throw new EmptyListException("Account for given customer Id is not present");
+//            }
+//        }catch (EmptyListException e){
+//            e.getMessage();
+//        }
+//        return new AccountListResponse(customerAccountsList);
+//    }
 }

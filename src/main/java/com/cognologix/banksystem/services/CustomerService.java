@@ -9,6 +9,4 @@ import java.util.List;
 public interface CustomerService {
     CustomerDTO createCustomer(Customer customer);
     CustomerListResponse getCustomer();
-    String deleteCustomer(Integer customerId);
-
 }

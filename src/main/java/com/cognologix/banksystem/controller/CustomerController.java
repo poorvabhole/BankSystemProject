@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/banksystem/customer")
 public class CustomerController {
     @Autowired
     private CustomerServiceImpl customerService;
@@ -39,14 +39,6 @@ public class CustomerController {
         CustomerDTO customerDTO = customerService.createCustomer(customer);
         customerDTO.setMessage("Customer added successfully");
         return new ResponseEntity<>(customerDTO, HttpStatus.OK);
-    }
-
-    /**
-     *
-     * */
-    @DeleteMapping("/deletecustomer/{customerId}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Integer customerId){
-        return new ResponseEntity<>(customerService.deleteCustomer(customerId),HttpStatus.OK);
     }
 
 }
