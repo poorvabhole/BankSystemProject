@@ -15,7 +15,7 @@ import java.util.List;
 public class CustomerListResponse extends BaseResponse {
     private List<Customer> customerList;
     public CustomerListResponse(List<Customer> customers){
-//        super(true);
+        super(true);
         this.customerList = customers;
     }
 }

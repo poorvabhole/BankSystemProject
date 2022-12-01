@@ -14,7 +14,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account {
-//    UUID uuid = UUID.randomUUID();
     private String accountId = UUID.randomUUID().toString();
 
 //    @NotBlank(message = "Required field")

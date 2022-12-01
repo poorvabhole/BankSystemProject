@@ -25,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             newAccount = accountDao.createAccount(id, account);
         }catch (final Exception exception){
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return new AccountDTO(newAccount);
     }
@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
                 throw  new EmptyListException("Account information is empty");
             }
         }catch (final EmptyListException exception){
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return new AccountListResponse(accountList);
     }
@@ -54,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
                 throw new AccountNotFoundException("Account not found");
             }
         }catch (final AccountNotFoundException ex){
-            ex.getMessage();
+            ex.printStackTrace();
         }
         return message;
     }
@@ -68,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
             currentAccountUpdate = currentAccount.get(0);
             currentAccountUpdate.setBalance(currentBalance);
         }catch (final Exception ex){
-            ex.getMessage();
+            ex.printStackTrace();
         }
         return currentAccountUpdate;
     }
@@ -86,22 +86,22 @@ public class AccountServiceImpl implements AccountService {
             currentAccountUpdate = currentAccount.get(0);
             currentAccountUpdate.setBalance(currentBalance);
         }catch (final InsufficentBalanceException exception){
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return currentAccountUpdate;
     }
 
     @Override //transfer money from 1 customer account to second customer account
-    public AccountListResponse transactionBetweenCustomers(Integer customerId1, String accountNumber1, Integer customerId2, String accountNumber2, Double amount) {
+    public AccountListResponse transactionBetweenCustomers(Integer customerId1, String senderAccountNo, Integer customerId2, String receiverAccountNo, Double amount) {
         List<Account> updatedAccountsList = null;
         try {
-            Account accountCustomer1 = withdraw(accountNumber1, amount);
-            Account accountCustomer2 = deposit(accountNumber2, amount);
+            Account accountCustomer1 = withdraw(senderAccountNo, amount);
+            Account accountCustomer2 = deposit(receiverAccountNo, amount);
             updatedAccountsList = new ArrayList<>();
             updatedAccountsList.add(accountCustomer1);
             updatedAccountsList.add(accountCustomer2);
         }catch (final Exception ex){
-            ex.getMessage();
+            ex.printStackTrace();
         }
         return new AccountListResponse(updatedAccountsList);
     }
@@ -115,7 +115,7 @@ public class AccountServiceImpl implements AccountService {
                 throw new EmptyListException("Account for given customer Id is not present");
             }
         }catch (EmptyListException e){
-            e.getMessage();
+            e.printStackTrace();
         }
         return new AccountListResponse(customerAccountsList);
     }

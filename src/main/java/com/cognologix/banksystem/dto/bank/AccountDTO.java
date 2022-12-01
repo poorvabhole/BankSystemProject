@@ -7,9 +7,8 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 //@NoArgsConstructor
 //@AllArgsConstructor
 public class AccountDTO extends BaseResponse{
@@ -19,18 +18,10 @@ public class AccountDTO extends BaseResponse{
     private Integer customerId;
 
     public AccountDTO(Account newAccount) {
-//        super(true);
+        super(true);
         this.accountId = newAccount.getAccountId();
         this.accountType = newAccount.getAccountType();
         this.balance = newAccount.getBalance();
         this.customerId = newAccount.getCustomerId();
     }
-//    private Double balance;
-
-//    public AccountDTO(Account account){
-//        this.balance = account.getBalance();
-//    }
-//    public AccountDTO(boolean success) {
-//        super(success);
-//    }
 }

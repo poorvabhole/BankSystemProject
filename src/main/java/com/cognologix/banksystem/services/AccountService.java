@@ -6,13 +6,20 @@ import com.cognologix.banksystem.entities.Account;
 
 public interface AccountService {
     AccountDTO createCustomerAccount(Integer id, Account account);
+
     Account deposit(String accountNumber, Double depositAmount);
+
     Account withdraw(String accountNumber, Double withdrawAmount);
-    AccountListResponse transactionBetweenCustomers(Integer customerId1, String accountNumber1, Integer customerId2, String accountNumber2, Double amount);
+
+    AccountListResponse transactionBetweenCustomers(Integer customerId1, String senderAccountNo,
+                                                    Integer customerId2, String receiverAccountNo,
+                                                    Double amount);
 
     AccountListResponse getAccountsByCustomerId(Integer customerId);
+
     AccountListResponse getAccount();
-//    void depositAmount();
-    String  deleteAccount(String accountNumber);
+
+    //    void depositAmount();
+    String deleteAccount(String accountNumber);
 
 }

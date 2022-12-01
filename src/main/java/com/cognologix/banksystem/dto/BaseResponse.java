@@ -9,12 +9,12 @@ import java.io.Serializable;
 @Setter
 public class BaseResponse implements Serializable {
     private String message;
-//    private boolean success;
+    private boolean success;
 
-//    public BaseResponse(final boolean success){
-//        this.success = success;
-//    }
-//    public boolean getSuccess(){
-//        return success;
-//    }
+    public BaseResponse(final boolean success){
+        this.success = success;
+    }
+    public boolean getSuccess(){
+        return success;
+    }
 }

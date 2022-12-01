@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/banksystem/customer")
 public class CustomerController {
     @Autowired
     private CustomerServiceImpl customerService;

@@ -1,14 +1,17 @@
 package com.cognologix.banksystem.dto.bank;
 
 import com.cognologix.banksystem.dto.BaseResponse;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class CustomerDTO extends BaseResponse {
     private Integer customerId;
     private String fullname;
+
+    public CustomerDTO(Integer customerId, String fullName) {
+        super(true);
+        this.customerId = customerId;
+        this.fullname = fullName;
+    }
 }

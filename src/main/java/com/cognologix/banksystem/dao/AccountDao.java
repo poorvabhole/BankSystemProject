@@ -35,22 +35,22 @@ public class AccountDao {
         List<Account> account = accountList.stream().filter(accountlist -> accountlist.getAccountId().equals(id)).collect(Collectors.toList());
         return account;
     }
+
     //method to find account by given customer id
-    public List<Account> findByCustomerId(Integer customerId){
+    public List<Account> findByCustomerId(Integer customerId) {
         List<Account> accountLists = accountList.stream().filter(accountlist -> accountlist.getCustomerId().equals(customerId)).collect(Collectors.toList());
         return accountLists;
     }
+
     //method deletes account having specified account number
-    public boolean delete(String accountNumber){
+    public boolean delete(String accountNumber) {
         List<Account> list = accountList.stream().filter(accountlist -> accountlist.getAccountId().equals(accountNumber)).collect(Collectors.toList());
         return accountList.remove(list.get(0));
     }
-    public boolean deleleByCustomerId(Integer customerId){
+
+    public boolean deleleByCustomerId(Integer customerId) {
         List<Account> accountLists = accountList.stream().filter(accountlist -> accountlist.getCustomerId().equals(customerId)).collect(Collectors.toList());
         return accountList.removeAll(accountLists);
     }
 
-//    public void save(Account account) {
-//        accountList.add(account);
-//    }
 }

@@ -35,9 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new EmptyListException("Customer information is empty");
             }
         }catch (final EmptyListException exception){
-            exception.getMessage();
-        }catch (final Exception ex){
-            ex.getMessage();
+            exception.printStackTrace();
         }
 
         return new CustomerListResponse(customerList);
@@ -54,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new CustomerNotFoundException("Customer not found for given customer Id");
             }
         }catch (final CustomerNotFoundException exception){
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return message;
     }
