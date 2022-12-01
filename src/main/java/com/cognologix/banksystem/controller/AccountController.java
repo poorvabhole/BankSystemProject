@@ -42,11 +42,11 @@ public class AccountController {
      * @param customerId
      * @return account list response
      * */
-//    @GetMapping("/customeraccounts")
-//    public ResponseEntity<AccountListResponse> accountsByCustomerId(@PathVariable Integer customerId) {
-//        AccountListResponse response =accountService.getAccountsByCustomerId(customerId);
-//        return new ResponseEntity<>(accountService.getAccountsByCustomerId(customerId), HttpStatus.OK);
-//    }
+    @GetMapping("/customeraccounts/{customerId}")
+    public ResponseEntity<AccountListResponse> accountsByCustomerId(@PathVariable Integer customerId) {
+        AccountListResponse response =accountService.getAccountsByCustomerId(customerId);
+        return new ResponseEntity<>(accountService.getAccountsByCustomerId(customerId), HttpStatus.OK);
+    }
 
     /**
      * creates bank account for given cusromerId
@@ -56,8 +56,6 @@ public class AccountController {
      */
     @PostMapping("/createcustomeraccount")
     public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountDto accountDto) {
-        System.out.println("#####" + accountDto.getCustomerId());
-
         AccountResponse accountDTO = accountService.createCustomerAccount(accountDto);
         accountDTO.setMessage("Account created successfully");
         return new ResponseEntity<>(accountDTO, HttpStatus.OK);

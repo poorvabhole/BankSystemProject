@@ -19,7 +19,8 @@ public interface AccountService {
 
     List<Transaction> getAccountStatement(Long accountNumber);
 
-    //    AccountListResponse getAccountsByCustomerId(Integer customerId);
+    AccountListResponse getAccountsByCustomerId(Integer customerId);
+
     AccountListResponse getAccount();
 
     //withdraw specified amount and check sufficent balance

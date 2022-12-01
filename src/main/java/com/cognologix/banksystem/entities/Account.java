@@ -32,6 +32,7 @@ public class Account {
     private Double balance;
 
     @ManyToOne
+    @JoinColumn(name="customer_customer_id", nullable=false)
     private Customer customer;
 
 }

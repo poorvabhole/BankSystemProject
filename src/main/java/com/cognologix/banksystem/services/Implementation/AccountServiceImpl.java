@@ -68,6 +68,7 @@ public class AccountServiceImpl implements AccountService {
             transaction.setReceiverAccountNumber(accountNumber);
             transaction.setBalance(currentBalance);
             transaction.setType("Deposit");
+            transaction.setDate(LocalDateTime.now());
             transactionDao.save(transaction);
             accountDao.save(currentAccount);
         } catch (final Exception ex) {
@@ -94,13 +95,12 @@ public class AccountServiceImpl implements AccountService {
             transaction.setDate(LocalDateTime.now());
             transactionDao.save(transaction);
             accountDao.save(currentAccount);
-            return currentAccount;
+
 
         } catch (final InsufficentBalanceException exception) {
-//            System.out.println("Error message ==> " + exception.getMessage());
-//            exception.printStackTrace();
             throw new InsufficentBalanceException(exception.getMessage());
         }
+        return currentAccount;
     }
 
     @Override //transfer money from 1 customer account to second customer account
@@ -128,18 +128,18 @@ public class AccountServiceImpl implements AccountService {
         }
 
     }
-//
-//    @Override //get list of accounts for specific customer
-//    public AccountListResponse getAccountsByCustomerId(Integer customerId) {
-//        List<Account> customerAccountsList = null;
-//        try {
-//            customerAccountsList = accountDao.findByCustomerId(customerId);
-//            if (customerAccountsList.size() == 0){
-//                throw new EmptyListException("Account for given customer Id is not present");
-//            }
-//        }catch (EmptyListException e){
-//            e.getMessage();
-//        }
-//        return new AccountListResponse(customerAccountsList);
-//    }
+
+    @Override //get list of accounts for specific customer
+    public AccountListResponse getAccountsByCustomerId(Integer customerId) {
+        List<Account> customerAccountsList = null;
+        try {
+            customerAccountsList = accountDao.findByCustomerId(customerId);
+            if (customerAccountsList.size() == 0) {
+                throw new EmptyListException("Account for given customer Id is not present");
+            }
+        } catch (EmptyListException e) {
+            e.getMessage();
+        }
+        return new AccountListResponse(customerAccountsList);
+    }
 }
