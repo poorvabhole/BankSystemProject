@@ -10,5 +10,5 @@ import java.util.List;
 public interface TransactionDao extends JpaRepository<Transaction, Integer> {
     @Query(value = "SELECT * FROM transaction" +
             " WHERE sender_account_number=?1 OR receiver_account_number=?1", nativeQuery = true)
-    List<Transaction> findBySenderAccountNumber(Long senderAccountNumber);
+    List<Transaction> findByAccountNumber(Integer senderAccountNumber);
 }

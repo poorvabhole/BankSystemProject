@@ -2,11 +2,13 @@ package com.cognologix.banksystem.dto.bank;
 
 import com.cognologix.banksystem.dto.BaseResponse;
 import com.cognologix.banksystem.entities.Account;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter
 @Setter
 public class AccountResponse extends BaseResponse{
-    private Long accountNumber;
+    private Integer accountNumber;
     private String accountType;
     private Double balance;
 

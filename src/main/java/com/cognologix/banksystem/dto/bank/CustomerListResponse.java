@@ -2,12 +2,8 @@ package com.cognologix.banksystem.dto.bank;
 
 import com.cognologix.banksystem.dto.BaseResponse;
 import com.cognologix.banksystem.entities.Customer;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.Lifecycle;
-import org.springframework.context.annotation.Primary;
-
 import java.util.List;
 
 @Getter

@@ -3,13 +3,15 @@ package com.cognologix.banksystem.controller;
 import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
-import com.cognologix.banksystem.entities.Account;
-import com.cognologix.banksystem.entities.Transaction;
+import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.TransactionDto;
+import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 import com.cognologix.banksystem.services.Implementation.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.websocket.server.PathParam;
 import java.util.List;
 
@@ -31,9 +33,17 @@ public class AccountController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * Get account statement
+     *
+     * @param accountNumber
+     * @return account statement response
+     * */
     @GetMapping("/getstatement")
-    public ResponseEntity<List<Transaction>> getStatement(@PathParam("accountNumber") Long accountNumber){
-        return new ResponseEntity<>(accountService.getAccountStatement(accountNumber),HttpStatus.OK);
+    public ResponseEntity<AccountStatementResponse> getStatement(@PathParam("accountNumber") Integer accountNumber) {
+        AccountStatementResponse response = accountService.getAccountStatement(accountNumber);
+        response.setMessage("Account statement");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -41,10 +51,10 @@ public class AccountController {
      *
      * @param customerId
      * @return account list response
-     * */
+     */
     @GetMapping("/customeraccounts/{customerId}")
     public ResponseEntity<AccountListResponse> accountsByCustomerId(@PathVariable Integer customerId) {
-        AccountListResponse response =accountService.getAccountsByCustomerId(customerId);
+        AccountListResponse response = accountService.getAccountsByCustomerId(customerId);
         return new ResponseEntity<>(accountService.getAccountsByCustomerId(customerId), HttpStatus.OK);
     }
 
@@ -69,8 +79,10 @@ public class AccountController {
      * @return reponse entity
      */
     @PutMapping("/depositAmount/{accountNumber}/{amount}")
-    public ResponseEntity<Account> depositAmount(@PathVariable Long accountNumber, @PathVariable Double amount) {
-        return new ResponseEntity<>(accountService.deposit(accountNumber, amount), HttpStatus.OK);
+    public ResponseEntity<TransactionDto> depositAmount(@PathVariable Integer accountNumber, @PathVariable Double amount) {
+        TransactionDto transactionDto = accountService.deposit(accountNumber, amount);
+        transactionDto.setMessage("Amount credited successfully");
+        return new ResponseEntity<>(transactionDto, HttpStatus.OK);
     }
 
     /**
@@ -81,8 +93,10 @@ public class AccountController {
      * @return reaponse entity
      */
     @PutMapping("/withdrawAmount/{accountNumber}/{amount}")
-    public ResponseEntity<Account> withdrawAmount(@PathVariable Long accountNumber, @PathVariable Double amount) {
-        return new ResponseEntity<>(accountService.withdraw(accountNumber, amount), HttpStatus.OK);
+    public ResponseEntity<TransactionDto> withdrawAmount(@PathVariable Integer accountNumber, @PathVariable Double amount) {
+        TransactionDto transactionDto = accountService.withdraw(accountNumber, amount);
+        transactionDto.setMessage("Amount debited successfully");
+        return new ResponseEntity<>(transactionDto, HttpStatus.OK);
     }
 
     /**
@@ -94,10 +108,16 @@ public class AccountController {
      * @return response entity
      */
     @PutMapping("/transfermoney")
-    public ResponseEntity<String> transactionBetweenCustomers(@PathParam("senderAccNo") Long senderAccNo,
-                                                              @PathParam("receiverAccNo") Long receiverAccNo,
-                                                              @PathParam(value = "amount") Double amount) {
-        return new ResponseEntity<>(accountService.transactionBetweenCustomers(senderAccNo, receiverAccNo, amount), HttpStatus.OK);
+    public ResponseEntity<TransferAmountDto> transactionBetweenCustomers(@PathParam("senderAccNo") Integer senderAccNo,
+                                                                         @PathParam("receiverAccNo") Integer receiverAccNo,
+                                                                         @PathParam(value = "amount") Double amount) {
+        TransferAmountDto transferAmountDto = accountService.transactionBetweenCustomers(senderAccNo, receiverAccNo, amount);
+        transferAmountDto.setMessage("Amount is transfer successfully..");
+        return new ResponseEntity<>(transferAmountDto, HttpStatus.OK);
     }
 
+    @DeleteMapping("/deactivateaccount")
+    public ResponseEntity<String> deactivateAccount(@PathParam("accountNumber") Integer accountNumber){
+        return new ResponseEntity<>(accountService.deactivateAccount(accountNumber),HttpStatus.OK);
+    }
 }

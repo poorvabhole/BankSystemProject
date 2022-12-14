@@ -1,6 +1,7 @@
 package com.cognologix.banksystem.entities;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -22,8 +23,7 @@ public class Customer {
     @Column(name = "address")
     private String address;
 
-//    @NotNull(message = "Required field")
-//    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @NotEmpty(message = "Required field")
     @Column(name = "dateOfBirth")
     private String dateOfBirth;
 

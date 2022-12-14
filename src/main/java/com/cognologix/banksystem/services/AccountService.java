@@ -3,28 +3,24 @@ package com.cognologix.banksystem.services;
 import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
-import com.cognologix.banksystem.entities.Account;
-import com.cognologix.banksystem.entities.Transaction;
-
-import java.util.List;
+import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.TransactionDto;
+import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 
 public interface AccountService {
     AccountResponse createCustomerAccount(AccountDto account);
 
-    Account deposit(Long accountNumber, Double depositAmount);
+    TransactionDto deposit(Integer accountNumber, Double depositAmount);
 
-    Account withdraw(Long accountNumber, Double withdrawAmount);
+    TransactionDto withdraw(Integer accountNumber, Double withdrawAmount);
 
-    String transactionBetweenCustomers(Long senderAccNo, Long receiverAccNo, Double amount);
+    TransferAmountDto transactionBetweenCustomers(Integer senderAccNo, Integer receiverAccNo, Double amount);
 
-    List<Transaction> getAccountStatement(Long accountNumber);
+    AccountStatementResponse getAccountStatement(Integer accountNumber);
 
     AccountListResponse getAccountsByCustomerId(Integer customerId);
 
     AccountListResponse getAccount();
-
-    //withdraw specified amount and check sufficent balance
-//    void depositAmount();
-//    String  deleteAccount(Integer accountNumber);
+    String deactivateAccount(Integer accountNumber);
 
 }

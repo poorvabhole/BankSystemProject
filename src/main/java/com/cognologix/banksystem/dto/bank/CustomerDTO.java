@@ -1,7 +1,8 @@
 package com.cognologix.banksystem.dto.bank;
 
 import com.cognologix.banksystem.dto.BaseResponse;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

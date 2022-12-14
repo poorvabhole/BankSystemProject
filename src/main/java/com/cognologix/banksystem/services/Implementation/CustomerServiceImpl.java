@@ -33,9 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new EmptyListException("Customer information is empty");
             }
         } catch (final EmptyListException exception) {
-            System.out.println("Error message ==> "+exception.getMessage());
-        } catch (final Exception ex) {
-            System.out.println("Error message ==> "+ex.getMessage());
+            throw new EmptyListException(exception.getMessage());
         }
         return new CustomerListResponse(customerList);
     }

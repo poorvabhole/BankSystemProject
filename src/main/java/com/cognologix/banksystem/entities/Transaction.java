@@ -1,6 +1,8 @@
 package com.cognologix.banksystem.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,10 +20,10 @@ public class Transaction {
     private Integer transactionId;
 
     @Column(name = "senderAccountNumber")
-    private Long senderAccountNumber;
+    private Integer senderAccountNumber;
 
     @Column(name = "receiverAccountNumber")
-    private Long receiverAccountNumber;
+    private Integer receiverAccountNumber;
 
     @Column(name = "type")
     private String type;
@@ -29,7 +31,24 @@ public class Transaction {
     @Column(name = "balance")
     private Double balance;
 
-    @DateTimeFormat(pattern = "yyyy/MM/dd hh/mm/ss")
+    @Column(name = "withdrawAmount")
+    private Double withdrawAmount;
+
+    @Column(name = "depositAmount")
+    private Double depositAmount;
+
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     @Column(name = "date")
     private LocalDateTime date;
+
+    public Transaction(Integer senderAccountNumber, Integer receiverAccountNumber, String type,
+                       Double balance, Double withdrawAmount, Double depositAmount, LocalDateTime date) {
+        this.senderAccountNumber = senderAccountNumber;
+        this.receiverAccountNumber = receiverAccountNumber;
+        this.type = type;
+        this.balance = balance;
+        this.withdrawAmount = withdrawAmount;
+        this.depositAmount = depositAmount;
+        this.date = date;
+    }
 }
