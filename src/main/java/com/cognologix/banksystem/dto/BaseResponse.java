@@ -14,7 +14,4 @@ public class BaseResponse implements Serializable {
     public BaseResponse(final boolean success){
         this.success = success;
     }
-//    public boolean getSuccess(){
-//        return success;
-//    }
 }

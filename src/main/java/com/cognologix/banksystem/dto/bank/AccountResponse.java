@@ -20,6 +20,6 @@ public class AccountResponse extends BaseResponse{
     }
 
     public AccountResponse(boolean success) {
-        super(success);
+        super(true);
     }
 }

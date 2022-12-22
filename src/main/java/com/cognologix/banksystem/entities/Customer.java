@@ -1,4 +1,5 @@
 package com.cognologix.banksystem.entities;
+import com.cognologix.banksystem.dto.bank.UpdateCustomerDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

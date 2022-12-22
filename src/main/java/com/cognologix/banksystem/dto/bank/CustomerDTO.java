@@ -8,11 +8,17 @@ import lombok.Setter;
 @Setter
 public class CustomerDTO extends BaseResponse{
     private Integer customerId;
-    private String fullname;
+    private String fullName;
+
+    public CustomerDTO() {
+        super(true);
+
+    }
 
     public CustomerDTO(Integer customerId, String fullName) {
         super(true);
-        this.setCustomerId(customerId);
-        this.setFullname(fullName);
+        this.setMessage("Customer updated successfully");
+        this.customerId=customerId;
+        this.fullName =fullName;
     }
 }

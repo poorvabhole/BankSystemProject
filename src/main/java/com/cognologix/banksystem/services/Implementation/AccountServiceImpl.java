@@ -1,7 +1,6 @@
 package com.cognologix.banksystem.services.Implementation;
 
 import com.cognologix.banksystem.Exception.AccountNotFoundException;
-import com.cognologix.banksystem.Exception.EmptyFieldException;
 import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.Exception.InsufficentBalanceException;
 import com.cognologix.banksystem.dao.AccountDao;
@@ -11,6 +10,7 @@ import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
 import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.DeactivateAccountResponse;
 import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 import com.cognologix.banksystem.entities.Account;
@@ -34,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionDao transactionDao;
 
+
     public static final String DEACTIVATE = "Deactivate";
     public static final String ACTIVE = "Active";
 
@@ -47,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override //return list of accounts
-    public AccountListResponse getAccount() {
+    public AccountListResponse getAccounts() {
         List<Account> accountList = null;
         try {
             accountList = accountDao.findAll().stream()
@@ -122,14 +123,20 @@ public class AccountServiceImpl implements AccountService {
     public TransferAmountDto transactionBetweenCustomers(Integer senderAccNo, Integer receiverAccNo, Double amount) {
         TransferAmountDto transferAmountDto = null;
         try {
-            if (senderAccNo == null || receiverAccNo == null || amount == null) {
-                throw new EmptyFieldException("All information is needed");
+//            if (senderAccNo == null || receiverAccNo == null || amount == null) {
+//                throw new EmptyFieldException("All information is needed");
+//            }
+            Account senderAccount = accountDao.findByAccountNumber(senderAccNo);
+            Account receiverAccount = accountDao.findByAccountNumber(receiverAccNo);
+            if (senderAccount == null || receiverAccount == null){
+                throw new AccountNotFoundException("Account with given number not found");
             }
+
             withdraw(senderAccNo, amount);
             deposit(receiverAccNo, amount);
             transferAmountDto = new TransferAmountDto(senderAccNo, receiverAccNo, amount);
-        } catch (final EmptyFieldException ex) {
-            throw new EmptyFieldException(ex.getMessage());
+        } catch (final AccountNotFoundException ex) {
+            throw new AccountNotFoundException(ex.getMessage());
         }
         return transferAmountDto;
     }
@@ -159,10 +166,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String deactivateAccount(Integer accountNumber) {
-        Account accountToDeactivate = accountDao.findByAccountNumber(accountNumber);
-        accountToDeactivate.setAccountStatus(DEACTIVATE);
-        accountDao.save(accountToDeactivate);
-        return "Account deactivated successfully..";
+    public DeactivateAccountResponse deactivateAccount(Integer accountNumber) {
+        Account accountToDeactivate = null;
+        try{
+            accountToDeactivate = accountDao.findByAccountNumber(accountNumber);
+            if (accountToDeactivate == null){
+                throw new AccountNotFoundException("Account with given number not found");
+            }
+            accountToDeactivate.setAccountStatus(DEACTIVATE);
+            accountDao.save(accountToDeactivate);
+        }catch (final AccountNotFoundException ex) {
+            throw new AccountNotFoundException(ex.getMessage());
+        }
+        return new DeactivateAccountResponse(true,accountNumber, accountToDeactivate.getAccountStatus());
     }
 }

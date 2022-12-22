@@ -4,9 +4,12 @@ import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
 import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.DeactivateAccountResponse;
 import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface AccountService {
     AccountResponse createCustomerAccount(AccountDto account);
 
@@ -20,7 +23,7 @@ public interface AccountService {
 
     AccountListResponse getAccountsByCustomerId(Integer customerId);
 
-    AccountListResponse getAccount();
-    String deactivateAccount(Integer accountNumber);
+    AccountListResponse getAccounts();
+    DeactivateAccountResponse deactivateAccount(Integer accountNumber);
 
 }

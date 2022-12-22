@@ -26,4 +26,7 @@ public class TransferAmountDto extends BaseResponse {
         this.date = LocalDateTime.now();
     }
 
+    public TransferAmountDto() {
+        super(true);
+    }
 }

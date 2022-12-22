@@ -4,34 +4,34 @@ import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
 import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.DeactivateAccountResponse;
 import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
-import com.cognologix.banksystem.services.Implementation.AccountServiceImpl;
+import com.cognologix.banksystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.util.List;
 
 @RestController
 @RequestMapping("/banksystem/account")
 public class AccountController {
     @Autowired
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
-    /**
-     * Gets all accounts
-     *
-     * @return account list response
-     */
-    @GetMapping("/getaccount")
-    public ResponseEntity<AccountListResponse> getAccount() {
-        AccountListResponse response = accountService.getAccount();
-        response.setMessage("Account list");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+//    /**
+//     * Gets all accounts
+//     *
+//     * @return account list response
+//     */
+//    @GetMapping("/getaccount")
+//    public ResponseEntity<AccountListResponse> getAccounts() {
+//        AccountListResponse response = accountService.getAccounts();
+//        response.setMessage("Account list");
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 
     /**
      * Get account statement
@@ -55,7 +55,10 @@ public class AccountController {
     @GetMapping("/customeraccounts/{customerId}")
     public ResponseEntity<AccountListResponse> accountsByCustomerId(@PathVariable Integer customerId) {
         AccountListResponse response = accountService.getAccountsByCustomerId(customerId);
-        return new ResponseEntity<>(accountService.getAccountsByCustomerId(customerId), HttpStatus.OK);
+
+        HttpStatus httpStatus = response.getAccountsList().isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.FOUND;
+
+        return new ResponseEntity<>(response, httpStatus);
     }
 
     /**
@@ -82,7 +85,8 @@ public class AccountController {
     public ResponseEntity<TransactionDto> depositAmount(@PathVariable Integer accountNumber, @PathVariable Double amount) {
         TransactionDto transactionDto = accountService.deposit(accountNumber, amount);
         transactionDto.setMessage("Amount credited successfully");
-        return new ResponseEntity<>(transactionDto, HttpStatus.OK);
+        HttpStatus httpStatus = transactionDto.getTransactionId() == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
+        return new ResponseEntity<>(transactionDto, httpStatus);
     }
 
     /**
@@ -96,7 +100,8 @@ public class AccountController {
     public ResponseEntity<TransactionDto> withdrawAmount(@PathVariable Integer accountNumber, @PathVariable Double amount) {
         TransactionDto transactionDto = accountService.withdraw(accountNumber, amount);
         transactionDto.setMessage("Amount debited successfully");
-        return new ResponseEntity<>(transactionDto, HttpStatus.OK);
+        HttpStatus httpStatus = transactionDto.getTransactionId() == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
+        return new ResponseEntity<>(transactionDto, httpStatus);
     }
 
     /**
@@ -113,11 +118,13 @@ public class AccountController {
                                                                          @PathParam(value = "amount") Double amount) {
         TransferAmountDto transferAmountDto = accountService.transactionBetweenCustomers(senderAccNo, receiverAccNo, amount);
         transferAmountDto.setMessage("Amount is transfer successfully..");
-        return new ResponseEntity<>(transferAmountDto, HttpStatus.OK);
+        HttpStatus httpStatus = transferAmountDto.getAmountTransfer() == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
+
+        return new ResponseEntity<>(transferAmountDto, httpStatus);
     }
 
     @DeleteMapping("/deactivateaccount")
-    public ResponseEntity<String> deactivateAccount(@PathParam("accountNumber") Integer accountNumber){
+    public ResponseEntity<DeactivateAccountResponse> deactivateAccount(@PathParam("accountNumber") Integer accountNumber){
         return new ResponseEntity<>(accountService.deactivateAccount(accountNumber),HttpStatus.OK);
     }
 }

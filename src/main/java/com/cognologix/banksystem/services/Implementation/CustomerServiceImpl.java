@@ -1,9 +1,11 @@
 package com.cognologix.banksystem.services.Implementation;
 
+import com.cognologix.banksystem.Exception.CustomerNotFoundException;
 import com.cognologix.banksystem.Exception.EmptyListException;
 import com.cognologix.banksystem.dao.CustomerDao;
 import com.cognologix.banksystem.dto.bank.CustomerDTO;
 import com.cognologix.banksystem.dto.bank.CustomerListResponse;
+import com.cognologix.banksystem.dto.bank.UpdateCustomerDto;
 import com.cognologix.banksystem.entities.Customer;
 import com.cognologix.banksystem.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,24 @@ public class CustomerServiceImpl implements CustomerService {
             throw new EmptyListException(exception.getMessage());
         }
         return new CustomerListResponse(customerList);
+    }
+
+    @Override
+    public CustomerDTO updateCustomer(Integer customerId, UpdateCustomerDto updateCustomerDto) {
+        Customer customer = new Customer();
+        try {
+            customer = customerDao.findByCustomerId(customerId);
+            if (customer == null){
+                throw new CustomerNotFoundException("Customer with given Id not found");
+            }
+            customer.setFullName(updateCustomerDto.getFullName());
+            customer.setAddress(updateCustomerDto.getAddress());
+            customer.setDateOfBirth(updateCustomerDto.getDateOfBirth());
+            customerDao.save(customer);
+
+        }catch (final CustomerNotFoundException exception){
+            throw new CustomerNotFoundException(exception.getMessage());
+        }
+        return new CustomerDTO(customer.getCustomerId(),customer.getFullName());
     }
 }

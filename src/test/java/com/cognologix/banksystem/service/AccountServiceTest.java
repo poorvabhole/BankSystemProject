@@ -1,4 +1,4 @@
-package com.cognologix.banksystem;
+package com.cognologix.banksystem.service;
 
 import com.cognologix.banksystem.Exception.AccountNotFoundException;
 import com.cognologix.banksystem.Exception.EmptyFieldException;
@@ -29,8 +29,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -69,29 +71,31 @@ public class AccountServiceTest {
 
     @Test
     public void createAccountTest() {
+        when(customerDao.findByCustomerId(accountDto.getCustomerId())).thenReturn(firstCustomer);
         when(accountDao.save(firstAccount)).thenReturn(firstAccount);
         AccountResponse actual = accountService.createCustomerAccount(accountDto);
         assertEquals(1500.00, actual.getBalance());
     }
 
     @Test
-    public void getAccountTest() {
+    public void getAccountsTest() {
         List<Account> accounts = new ArrayList<>();
         accounts.add(firstAccount);
         accounts.add(secondAccount);
         when(accountDao.findAll()).thenReturn(accounts);
-        assertEquals(2, accountService.getAccount().getAccountsList().size());
+        assertEquals(2, accountService.getAccounts().getAccountsList().size());
     }
 
     @Test
     public void getAccount_emptyListException() {
         List<Account> accounts = new ArrayList<>();
         accountDao.saveAll(accounts);
-        Exception exception = assertThrows(EmptyListException.class, () -> accountService.getAccount());
+        Exception exception = assertThrows(EmptyListException.class, () -> accountService.getAccounts());
         String expectedMessage = "Account information is empty";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
+
 
     @Test
     public void depositTest_success() {

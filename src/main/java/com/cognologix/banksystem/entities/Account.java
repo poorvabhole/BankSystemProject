@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 public class Account {
+//    @TableGenerator(name = "numberGenerator",initialValue = 10000, allocationSize = 10)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, name = "accountNumber")

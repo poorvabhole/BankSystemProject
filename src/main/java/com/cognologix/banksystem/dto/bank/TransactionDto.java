@@ -20,6 +20,7 @@ public class TransactionDto extends BaseResponse {
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime date;
 
+
     public TransactionDto(Transaction transaction) {
         super(true);
         this.transactionId = transaction.getTransactionId();
@@ -28,5 +29,9 @@ public class TransactionDto extends BaseResponse {
         this.withdrawAmount = transaction.getWithdrawAmount();
         this.balance = transaction.getBalance();
         this.date = transaction.getDate();
+    }
+
+    public TransactionDto() {
+        super(true);
     }
 }

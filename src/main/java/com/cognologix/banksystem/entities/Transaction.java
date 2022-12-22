@@ -41,6 +41,9 @@ public class Transaction {
     @Column(name = "date")
     private LocalDateTime date;
 
+//    public Transaction() {
+//    }
+
     public Transaction(Integer senderAccountNumber, Integer receiverAccountNumber, String type,
                        Double balance, Double withdrawAmount, Double depositAmount, LocalDateTime date) {
         this.senderAccountNumber = senderAccountNumber;
