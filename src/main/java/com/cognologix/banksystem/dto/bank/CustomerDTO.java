@@ -12,12 +12,10 @@ public class CustomerDTO extends BaseResponse{
 
     public CustomerDTO() {
         super(true);
-
     }
 
     public CustomerDTO(Integer customerId, String fullName) {
         super(true);
-        this.setMessage("Customer updated successfully");
         this.customerId=customerId;
         this.fullName =fullName;
     }

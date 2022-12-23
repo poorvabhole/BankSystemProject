@@ -15,6 +15,7 @@ import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 import com.cognologix.banksystem.entities.Account;
 import com.cognologix.banksystem.entities.Customer;
+import com.cognologix.banksystem.entities.ErrorEnum;
 import com.cognologix.banksystem.entities.Transaction;
 import com.cognologix.banksystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
                     .collect(Collectors.toList());
 
             if (accountList.size() == 0) {
-                throw new EmptyListException("Account information is empty");
+                throw new EmptyListException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage());
             }
         } catch (final EmptyListException exception) {
             throw new EmptyListException(exception.getMessage());
@@ -71,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             currentAccount = accountDao.findByAccountNumber(accountNumber);
             if (currentAccount == null) {
-                throw new AccountNotFoundException("Account with given number not found");
+                throw new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage());
             }
             final Double currentBalance = currentAccount.getBalance() + depositAmount;
             currentAccount.setBalance(currentBalance);
@@ -96,11 +97,11 @@ public class AccountServiceImpl implements AccountService {
         try {
             currentAccount = accountDao.findByAccountNumber(accountNumber);
             if (currentAccount == null) {
-                throw new AccountNotFoundException("Account with given number not found");
+                throw new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage());
             }
             final Double currentBalance = currentAccount.getBalance() - withdrawAmount;
             if (currentBalance < 500) {
-                throw new InsufficentBalanceException("Insufficent balance, can not withdraw money");
+                throw new InsufficentBalanceException(ErrorEnum.INSUFFICENT_BALANCE.getMessage());
             }
             currentAccount.setBalance(currentBalance);
 
@@ -123,13 +124,10 @@ public class AccountServiceImpl implements AccountService {
     public TransferAmountDto transactionBetweenCustomers(Integer senderAccNo, Integer receiverAccNo, Double amount) {
         TransferAmountDto transferAmountDto = null;
         try {
-//            if (senderAccNo == null || receiverAccNo == null || amount == null) {
-//                throw new EmptyFieldException("All information is needed");
-//            }
             Account senderAccount = accountDao.findByAccountNumber(senderAccNo);
             Account receiverAccount = accountDao.findByAccountNumber(receiverAccNo);
             if (senderAccount == null || receiverAccount == null){
-                throw new AccountNotFoundException("Account with given number not found");
+                throw new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage());
             }
 
             withdraw(senderAccNo, amount);
@@ -157,7 +155,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             customerAccountsList = accountDao.findByCustomerId(customerId);
             if (customerAccountsList.size() == 0) {
-                throw new EmptyListException("Account for given customer Id is not present");
+                throw new EmptyListException(ErrorEnum.NOACCOUNT_FOR_CUSTOMER.getMessage());
             }
         } catch (EmptyListException e) {
             throw new EmptyListException(e.getMessage());
@@ -171,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
         try{
             accountToDeactivate = accountDao.findByAccountNumber(accountNumber);
             if (accountToDeactivate == null){
-                throw new AccountNotFoundException("Account with given number not found");
+                throw new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage());
             }
             accountToDeactivate.setAccountStatus(DEACTIVATE);
             accountDao.save(accountToDeactivate);

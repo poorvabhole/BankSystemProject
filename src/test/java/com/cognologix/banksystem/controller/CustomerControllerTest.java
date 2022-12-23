@@ -96,11 +96,13 @@ class CustomerControllerTest {
 
         UpdateCustomerDto updateCustomerDto = new UpdateCustomerDto("Purva", "Dhule", "15/8/1997");
 
-        CustomerDTO customerDTO = new CustomerDTO(1, "Purva");
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setCustomerId(1);
+        customerDTO.setFullName("Purva");
 
         when(customerService.updateCustomer(1, updateCustomerDto)).thenReturn(customerDTO);
 
-        mockMvc.perform(put("/banksystem/customer/updatecustomer/1")
+        mockMvc.perform(put("/banksystem/customer/updatecustomer/{customerId}",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDTO)))
                 .andExpect(status().isOk());

@@ -7,6 +7,7 @@ import com.cognologix.banksystem.dto.bank.CustomerDTO;
 import com.cognologix.banksystem.dto.bank.CustomerListResponse;
 import com.cognologix.banksystem.dto.bank.UpdateCustomerDto;
 import com.cognologix.banksystem.entities.Customer;
+import com.cognologix.banksystem.entities.ErrorEnum;
 import com.cognologix.banksystem.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             customerList = customerDao.findAll();
             if (customerList.size() == 0) {
-                throw new EmptyListException("Customer information is empty");
+                throw new EmptyListException(ErrorEnum.EMPTY_LIST.getMessage());
             }
         } catch (final EmptyListException exception) {
             throw new EmptyListException(exception.getMessage());
@@ -42,11 +43,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO updateCustomer(Integer customerId, UpdateCustomerDto updateCustomerDto) {
-        Customer customer = new Customer();
+        Customer customer;
         try {
             customer = customerDao.findByCustomerId(customerId);
             if (customer == null){
-                throw new CustomerNotFoundException("Customer with given Id not found");
+                throw new CustomerNotFoundException(ErrorEnum.CUSTOMER_NOT_FOUND.getMessage());
             }
             customer.setFullName(updateCustomerDto.getFullName());
             customer.setAddress(updateCustomerDto.getAddress());

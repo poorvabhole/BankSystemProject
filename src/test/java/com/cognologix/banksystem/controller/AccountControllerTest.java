@@ -11,6 +11,7 @@ import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 import com.cognologix.banksystem.entities.Account;
 import com.cognologix.banksystem.entities.Customer;
+import com.cognologix.banksystem.entities.ErrorEnum;
 import com.cognologix.banksystem.entities.Transaction;
 import com.cognologix.banksystem.services.AccountService;
 import com.cognologix.banksystem.services.CustomerService;
@@ -221,7 +222,7 @@ class AccountControllerTest {
         String message = "Error : Insufficent balance, can not withdraw money";
 
         when(accountService.withdraw(1, 1500.00)).thenThrow(
-                new InsufficentBalanceException("Insufficent balance, can not withdraw money"));
+                new InsufficentBalanceException(ErrorEnum.INSUFFICENT_BALANCE.getMessage()));
 
         mockMvc.perform(put("/banksystem/account/withdrawAmount/{accountNumber}/{amount}", 1, 1500.00)
                         .content(objectMapper.writeValueAsString(transactionDto))
@@ -266,7 +267,7 @@ class AccountControllerTest {
         TransferAmountDto transferAmountDto = new TransferAmountDto();
 
         when(accountService.transactionBetweenCustomers(1, 2, 120.00)).
-                thenThrow(new AccountNotFoundException("Account with given number not found"));
+                thenThrow(new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage()));
 
         mockMvc.perform(put("/banksystem/account/transfermoney?senderAccNo=1&receiverAccNo=2&amount=120.00")
                         .content(objectMapper.writeValueAsString(transferAmountDto))
@@ -301,7 +302,7 @@ class AccountControllerTest {
         DeactivateAccountResponse response = new DeactivateAccountResponse();
 
         when(accountService.deactivateAccount(1)).
-                thenThrow(new AccountNotFoundException("Account with given number not found"));
+                thenThrow(new AccountNotFoundException(ErrorEnum.ACCOUNT_NOT_FOUND.getMessage()));
 
         mockMvc.perform(delete("/banksystem/account/deactivateaccount?accountNumber=1")
                         .content(objectMapper.writeValueAsString(response))

@@ -1,13 +1,10 @@
 package com.cognologix.banksystem.controller;
-
-import com.cognologix.banksystem.Exception.CustomerNotFoundException;
 import com.cognologix.banksystem.dao.CustomerDao;
 import com.cognologix.banksystem.dto.bank.CustomerDTO;
 import com.cognologix.banksystem.dto.bank.CustomerListResponse;
 import com.cognologix.banksystem.dto.bank.UpdateCustomerDto;
 import com.cognologix.banksystem.entities.Customer;
 import com.cognologix.banksystem.services.CustomerService;
-import com.cognologix.banksystem.services.Implementation.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +56,8 @@ public class CustomerController {
     @PutMapping("/updatecustomer/{customerId}")
     public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Integer customerId, @RequestBody UpdateCustomerDto updateCustomerDto){
         CustomerDTO customerDTO = customerService.updateCustomer(customerId, updateCustomerDto);
-//        customerDTO.setMessage("Customer details updated successfully");
-        HttpStatus httpStatus = customerDTO.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        customerDTO.setMessage("Customer details updated successfully");
+        HttpStatus httpStatus = customerDTO.isSuccess() == false ? HttpStatus.BAD_REQUEST : HttpStatus.OK ;
         return new ResponseEntity<>(customerDTO, httpStatus);
     }
 
