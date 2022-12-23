@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ class CustomerControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    public void getCustomer() throws Exception {
+    public void getCustomerTest() throws Exception {
         Customer customer = new Customer();
         customer.setCustomerId(1);
         customer.setFullName("Poorva");
@@ -55,7 +54,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void getCustomer_negative() throws Exception {
+    void getCustomer_CustomerNotFoundExceptionTest() throws Exception {
         List<Customer> list = new ArrayList<>();
         CustomerListResponse listResponse = new CustomerListResponse(list);
         when(customerService.getCustomer()).thenReturn(listResponse);
@@ -66,7 +65,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void createCustomer() throws Exception {
+    void createCustomerTest() throws Exception {
         Customer customer = new Customer();
         customer.setCustomerId(1);
         customer.setFullName("Poorva");

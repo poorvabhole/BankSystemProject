@@ -6,6 +6,7 @@ import com.cognologix.banksystem.dto.bank.AccountDto;
 import com.cognologix.banksystem.dto.bank.AccountListResponse;
 import com.cognologix.banksystem.dto.bank.AccountResponse;
 import com.cognologix.banksystem.dto.bank.AccountStatementResponse;
+import com.cognologix.banksystem.dto.bank.DeactivateAccountResponse;
 import com.cognologix.banksystem.dto.bank.TransactionDto;
 import com.cognologix.banksystem.dto.bank.TransferAmountDto;
 import com.cognologix.banksystem.entities.Account;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -229,7 +231,7 @@ class AccountControllerTest {
     }
 
     @Test
-    void transactionBetweenCustomers() throws Exception{
+    void transactionBetweenCustomers() throws Exception {
         Customer customer = new Customer();
         customer.setCustomerId(1);
         customer.setFullName("Poorva");
@@ -251,19 +253,19 @@ class AccountControllerTest {
         transferAmountDto.setReceiverAccountNo(2);
         transferAmountDto.setSenderAccountNo(1);
 
-        when(accountService.transactionBetweenCustomers(1,2,120.00)).thenReturn(transferAmountDto);
+        when(accountService.transactionBetweenCustomers(1, 2, 120.00)).thenReturn(transferAmountDto);
 
         mockMvc.perform(put("/banksystem/account/transfermoney?senderAccNo=1&receiverAccNo=2&amount=120.00")
-                .content(objectMapper.writeValueAsString(transferAmountDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(transferAmountDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void transactionBetweenCustomers_AccountNotFondException() throws Exception{
+    public void transactionBetweenCustomers_AccountNotFondException() throws Exception {
         TransferAmountDto transferAmountDto = new TransferAmountDto();
 
-        when(accountService.transactionBetweenCustomers(1,2,120.00)).
+        when(accountService.transactionBetweenCustomers(1, 2, 120.00)).
                 thenThrow(new AccountNotFoundException("Account with given number not found"));
 
         mockMvc.perform(put("/banksystem/account/transfermoney?senderAccNo=1&receiverAccNo=2&amount=120.00")
@@ -273,7 +275,37 @@ class AccountControllerTest {
     }
 
     @Test
-    void deactivateAccount() {
+    void deactivateAccount() throws Exception {
+        Customer customer = new Customer();
+        customer.setCustomerId(1);
+        customer.setFullName("Poorva");
+        Account account = new Account();
+        account.setAccountNumber(1);
+        account.setCustomer(customer);
 
+        DeactivateAccountResponse response = new DeactivateAccountResponse();
+        response.setAccountNumber(1);
+        response.setAccountStatus("Deactivate");
+
+        when(accountService.deactivateAccount(1)).thenReturn(response);
+
+        mockMvc.perform(delete("/banksystem/account/deactivateaccount?accountNumber=1")
+                        .content(objectMapper.writeValueAsString(response))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountNumber", is(account.getAccountNumber())));
+    }
+
+    @Test
+    void deactivateAccount_AccountNotFoundException() throws Exception {
+        DeactivateAccountResponse response = new DeactivateAccountResponse();
+
+        when(accountService.deactivateAccount(1)).
+                thenThrow(new AccountNotFoundException("Account with given number not found"));
+
+        mockMvc.perform(delete("/banksystem/account/deactivateaccount?accountNumber=1")
+                        .content(objectMapper.writeValueAsString(response))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

@@ -21,17 +21,17 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-//    /**
-//     * Gets all accounts
-//     *
-//     * @return account list response
-//     */
-//    @GetMapping("/getaccount")
-//    public ResponseEntity<AccountListResponse> getAccounts() {
-//        AccountListResponse response = accountService.getAccounts();
-//        response.setMessage("Account list");
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
+    /**
+     * Gets all accounts
+     *
+     * @return account list response
+     */
+    @GetMapping("/getaccount")
+    public ResponseEntity<AccountListResponse> getAccounts() {
+        AccountListResponse response = accountService.getAccounts();
+        response.setMessage("Account list");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     /**
      * Get account statement
@@ -125,6 +125,9 @@ public class AccountController {
 
     @DeleteMapping("/deactivateaccount")
     public ResponseEntity<DeactivateAccountResponse> deactivateAccount(@PathParam("accountNumber") Integer accountNumber){
-        return new ResponseEntity<>(accountService.deactivateAccount(accountNumber),HttpStatus.OK);
+        DeactivateAccountResponse response = accountService.deactivateAccount(accountNumber);
+        response.setMessage("Account deactivated successfully");
+        HttpStatus httpStatus = response.getAccountNumber() > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(response,httpStatus);
     }
 }
